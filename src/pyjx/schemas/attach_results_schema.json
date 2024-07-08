@@ -1,0 +1,67 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Environment",
+    "description": "Estructura para crear entorno de regresión en Jira",
+    "type": "object",
+    "properties": {
+        "execution": {
+            "$ref": "#/definitions/issuePattern"
+        },
+        "status": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "$ref": "#/definitions/xrayStatus"
+                    }
+                },
+                "allOf": [
+                    {"$ref": "#/definitions/attachTypeFilters"}
+                ],
+                "required": ["value"],
+                "oneOf": [
+                    {"required": ["filter"]},
+                    {"required": ["set"]},
+                    {"required": ["keys"]}
+                ]
+            }
+        },
+        "exclude": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/xrayStatus"
+                    }
+                }
+            },
+            "allOf": [
+                {"$ref": "#/definitions/attachTypeFilters"}
+            ]
+        }
+    },
+    "required": ["execution"],
+    "definitions": {
+        "issuePattern": {
+            "type": "string",
+            "pattern": "^PJX-\\d{1,}$"
+        },
+        "xrayStatus": {
+            "type": "string",
+            "enum": ["PASS", "FAIL", "EXECUTING", "TODO", "ABORTED"]
+        },
+        "attachTypeFilters": {
+            "type": "object",
+            "properties": {
+                "keys": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/issuePattern"}
+                },
+                "set": {"$ref": "#/definitions/issuePattern"},
+                "filter": {"type": "string"}
+            }
+        }
+    }
+}

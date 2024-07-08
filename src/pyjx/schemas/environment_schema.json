@@ -1,0 +1,114 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Environment",
+    "description": "Estructura para crear entorno de regresión en Jira",
+    "type": "object",
+    "properties": {
+        "plan": {"$ref": "#/definitions/issuePattern"},
+        "execution": {"$ref": "#/definitions/issuePattern"},
+        "set": {"$ref": "#/definitions/issuePattern"},
+        "tests": {
+            "description": "Especificación del origen de los casos de prueba.",
+            "dependencies": {
+                "clone": ["fields"],
+                "create": ["fields"]
+            },
+            "type": "object",
+            "properties": {
+                "add": {
+                    "description": "Casos de prueba ya creados que solo serán agregados.",
+                    "$ref": "#/definitions/testActionProperties"
+                },
+                "create": {
+                    "description": "Casos de prueba que serán creados en el momento de la ejecución.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "clone": {
+                    "description": "Casos de prueba que serán clonados y agregados.",
+                    "$ref": "#/definitions/testActionProperties"
+                },
+                "fields": {
+                    "description": "Configura los campos nuevos para la regresión.",
+                    "type": "object",
+                    "required": ["app", "path"],
+                    "properties": {
+                        "app": {
+                            "description": "Información de la aplicación de los casos de prueba que serán clonados.",
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "key": {
+                                            "type": "string",
+                                            "pattern": "^CDA-\\d{1,}$"
+                                        }
+                                    },
+                                    "required": ["key"]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "type": "string",
+                                            "pattern": "[A_Z].*\\(CDA-\\d{1,}\\)$"
+                                        }
+                                    },
+                                    "required": ["name"]
+                                }
+                            ]
+                        },
+                        "path": {
+                            "description": "La ruta de repositorio de Xray.",
+                            "type": "string"
+                        },
+                        "labels": {
+                            "description": "Etiquetas que serán agregadas a cada caso de prueba clonado.",
+                            "type": "array",
+                            "items": {
+                                "uniqueItems": true,
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "required": ["plan", "tests"],
+    "definitions": {
+        "issuePattern": {
+            "type": "string",
+            "pattern": "^PJX-\\d{1,}$"
+        },
+        "testActionProperties": {
+            "description": "Métodos de obtención de casos de prueba.",
+            "type": "object",
+            "properties": {
+                "path": {
+                    "description": "La ruta de repositorio de Xray.",
+                    "type": "string"
+                },
+                "keys": {
+                    "description": "Las claves de los casos de prueba.",
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/issuePattern"},
+                    "minItems": 1
+                },
+                "execution": {"$ref": "#/definitions/issuePattern"},
+                "set": {"$ref": "#/definitions/issuePattern"},
+                "plan": {"$ref": "#/definitions/issuePattern"},
+                "pattern": {
+                    "description": "Patron de búsqueda (regexp) para coincidencias en los casos de prueba.",
+                    "type": "string"
+                },
+                "filter": {
+                    "description": "Entidad (función o clase) encargada de filtrar a traves de código los casos de prueba",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
