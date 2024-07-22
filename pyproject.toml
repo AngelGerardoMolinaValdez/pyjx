@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyjx"
-version = "2.0.0"
+version = "2.0.0.dev"
 description = "PYJX es una herramienta de consola enfocada para automatizar diversos procesos en JIRA y Xray, facilitando la gestión y ejecución de pruebas dentro de estos sistemas. Con esta herramienta, los usuarios pueden automatizar tareas repetitivas y complejas relacionadas con la gestión de planes de prueba, ejecuciones de prueba, conjuntos de prueba y casos de prueba."
 authors = ["Angel Gerardo Molina Valdez <angelgerardomolinavaldez@gmail.com>"]
 readme = "README.md"
@@ -18,3 +18,6 @@ assertpy = "^1.1"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+pyjx2="pyjx.run:main"
