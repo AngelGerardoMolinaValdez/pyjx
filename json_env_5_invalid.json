@@ -1,0 +1,24 @@
+{
+    "execution": "PJX-501",
+    "set": "PJX-502",
+    "tests": {
+      "add": {
+        "path": "/ruta/tests/existentes",
+        "keys": ["PJX-601", "PJX-602"],
+        "execution": "PJX-603"
+      },
+      "create": ["Nuevo escenario A", "Nuevo escenario B"],
+      "clone": {
+        "path": "/otra/ruta/tests",
+        "keys": ["PJX-701", "PJX-702"],
+        "plan": "PJX-703"
+      },
+      "fields": {
+        "app": {
+          "name": "Aplicación de Pruebas (CDA-3456)"
+        },
+        "path": "/ruta/final/tests",
+        "labels": ["combinado", "2024Q2"]
+      }
+    }
+  }
