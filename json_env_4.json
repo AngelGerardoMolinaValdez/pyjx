@@ -1,0 +1,14 @@
+{
+    "plan": "PJX-654",
+    "tests": {
+        "create": [
+            "Test 1",
+            "Test 2"
+        ],
+        "fields": {
+            "path": "path/to/tests/to/clone",
+            "app": {"key": "CDA-654"}
+        }
+    }
+
+}

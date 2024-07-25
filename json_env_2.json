@@ -1,0 +1,11 @@
+{
+    "plan": "PJX-6",
+    "execution": "PJX-65476",
+    "tests": {
+        "add": {
+            "path": "path/to/tests",
+            "keys": ["PJX-654646646"],
+            "clone": true
+        }
+    }
+}
