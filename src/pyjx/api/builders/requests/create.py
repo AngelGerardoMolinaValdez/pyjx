@@ -33,6 +33,11 @@ class RequestBodyCreateBuilder:
         Construye y devuelve el cuerpo de la solicitud.
     """
     def __init__(self, add_project: bool = True) -> None:
+        self.__project_added = add_project
+        self.__set_default_fields()
+
+
+    def __set_default_fields(self, add_project: bool) -> None:
         if add_project:
             project = {"project": {"key": "PJX"}}
         else:
@@ -41,6 +46,10 @@ class RequestBodyCreateBuilder:
         self.__fields = {
             "fields": project
         }
+
+    def reset(self) -> Self:
+        self.__set_default_fields(self.__project_added)
+        return self
 
     def add_project(self, project: str) -> Self:
         """Agrega un proyecto a los campos.

@@ -17,7 +17,7 @@ class TestJSONSchemaEnv(unittest.TestCase):
                 'src',
                 'pyjx',
                 'schemas',
-                'environment_schema.json'
+                'environment_schema_1.json'
             )
         )
         with open(path, 'r', encoding="utf-8") as file:
@@ -381,29 +381,3 @@ class TestJSONSchemaEnv(unittest.TestCase):
             }
         }
         assert_that(validate).raises(ValidationError).when_called_with(fields, self.schema)
-
-    def test_test_action_properties_pattern_valid(self):
-        fields = {
-            "plan": "PJX-654",
-            "tests": {
-                "add": {
-                    "path": "path/to/tests",
-                    "pattern": ".*Test.*",
-                    "keys": ["PJX-64"]
-                }
-            }
-        }
-        assert_that(validate(fields, self.schema)).is_none()
-
-    def test_test_action_properties_filter_valid(self):
-        fields = {
-            "plan": "PJX-654",
-            "tests": {
-                "add": {
-                    "path": "path/to/tests",
-                    "filter": "custom_filter",
-                    "keys": ["PJX-64"]
-                }
-            }
-        }
-        assert_that(validate(fields, self.schema)).is_none()

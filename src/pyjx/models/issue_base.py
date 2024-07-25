@@ -3,7 +3,7 @@ from api.client import Client
 from abc import ABC
 
 class IssueBase(ABC):
-    def __init__(self, fields: dict, factory) -> None:
+    def __init__(self, fields: dict, factory, observers) -> None:
         """Inicializa una nueva instancia de IssueBase.
 
         Args:
@@ -12,6 +12,7 @@ class IssueBase(ABC):
         self.__fields = fields
         self.__client = Client
         self.__factory = factory
+        self.__observers = observers
         self.__issue_deleted = False
 
     def key(self) -> str:
@@ -25,6 +26,18 @@ class IssueBase(ABC):
             "PJX-1"
         """
         return self.__fields.get("key")
+
+    def issuetype(self) -> str:
+        """Devuelve el tipo del Issue.
+
+        Returns:
+            str: La clave del Issue.
+
+        Examples:
+            >>> issue.issuetype()
+            "PJX-1"
+        """
+        return self.__fields.get("fields", {}).get("issuetype", {}).get("name", {})
 
     def id(self) -> str:
         """Devuelve el id del Issue.

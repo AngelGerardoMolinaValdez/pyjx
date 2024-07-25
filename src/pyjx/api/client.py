@@ -1,17 +1,21 @@
-from typing import ClassVar
+from typing import ClassVar, Union
 from json import JSONDecodeError
 from requests import get, post, put, delete, Response
-from requests.auth import AuthBase
+from requests.auth import HTTPBasicAuth, AuthBase
 from errors import ClientError, ServerError
 
 
 class Client:
-    __url: ClassVar = None
+    __url: ClassVar = "https://angelgerardomolinavaldez.atlassian.net/"
     __auth: ClassVar = None
     __request_details: ClassVar = {
         "verify": True,
         "timeout": 10
     }
+
+    @classmethod
+    def configure_auth(cls, username: str, password: str):
+        cls.__auth = HTTPBasicAuth(username, password)
 
     @classmethod
     def configure(cls, url: str, auth: AuthBase, verify: bool = True, timeout: int = 10):

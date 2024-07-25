@@ -4,6 +4,17 @@
     "description": "Estructura para crear entorno de regresión en Jira",
     "type": "object",
     "properties": {
+        "auth": {
+            "type": "object",
+            "properties": {
+                "username": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "plan": {"$ref": "#/definitions/issuePattern"},
         "execution": {"$ref": "#/definitions/issuePattern"},
         "set": {"$ref": "#/definitions/issuePattern"},
@@ -99,15 +110,7 @@
                 },
                 "execution": {"$ref": "#/definitions/issuePattern"},
                 "set": {"$ref": "#/definitions/issuePattern"},
-                "plan": {"$ref": "#/definitions/issuePattern"},
-                "pattern": {
-                    "description": "Patron de búsqueda (regexp) para coincidencias en los casos de prueba.",
-                    "type": "string"
-                },
-                "filter": {
-                    "description": "Entidad (función o clase) encargada de filtrar a traves de código los casos de prueba",
-                    "type": "string"
-                }
+                "plan": {"$ref": "#/definitions/issuePattern"}
             }
         }
     }

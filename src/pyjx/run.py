@@ -1,3 +1,4 @@
+import os
 from pyjx.parser.builder_command_parser import CommandBuilder
 
 def main():
@@ -8,7 +9,10 @@ def main():
     parser = builder.get_parser()
 
     args = parser.parse_args()
-    args.func(args)
+    if args.command == "run":
+        args.func(args, os.getcwd())
+    else:
+        args.func(args)
 
 if __name__ == "__main__":
     main()

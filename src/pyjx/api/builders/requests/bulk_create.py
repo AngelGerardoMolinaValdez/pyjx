@@ -6,6 +6,11 @@ class RequestBodyBulkCreateBuilder:
             "issueUpdates": []
         }
 
+    def reset(self) -> Self:
+        self.__fields = {
+            "issueUpdates": []
+        }
+
     def add_issue(self, issue: dict) -> Self:
         self.__fields["issueUpdates"].append(issue)
         return self

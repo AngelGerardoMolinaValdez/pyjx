@@ -1,15 +1,17 @@
 from typing import Union
 from json import dumps
-from models.test import Test
-from models.test_set import TestSet
-from models.test_execution import TestExecution
-from models.test_plan import TestPlan
-from api.client import Client
+from datetime import datetime
+from pyjx.models.test import Test
+from pyjx.models.test_set import TestSet
+from pyjx.models.test_execution import TestExecution
+from pyjx.models.test_plan import TestPlan
+from pyjx.api.client import Client
+from pyjx.observers.base_report_observer import BaseReportObserver
 
 class IssueFactory:
-    """Clase de fábrica para la creación y gestión de instancias de Test.
+    """Clase de fábrica para la creación  gestión de instancias de Test.
 
-    Esta clase facilita la creación, clonación y recuperación de instancias de variedad de issues
+    Esta clase facilita la creación, clonación  recuperación de instancias de variedad de issues
     utilizando llamadas  a la API REST de JIRA.
 
     Atributos:
@@ -23,8 +25,8 @@ class IssueFactory:
         get(key_or_id): Obtiene una instancia de un issue de Jira por su clave o ID.
         bulk_get(keys_or_ids): Obtiene múltiples instancias de issues de Jira por sus claves o IDs.
         get_tests_from_test_repository(test_repository_id): Obtiene los tests asociados a un Test Repository.
-        get_issues_from_summary(summary, type_issue): Obtiene los issues según el summary y el tipo de issue.
-        get_issues_from_summaries(summaries, type_issue): Obtiene los issues según los summaries y el tipo de issue.
+        get_issues_from_summary(summary, type_issue): Obtiene los issues según el summary  el tipo de issue.
+        get_issues_from_summaries(summaries, type_issue): Obtiene los issues según los summaries  el tipo de issue.
     """
     __issue_types = {
         "Test": Test,
@@ -36,6 +38,14 @@ class IssueFactory:
     def __init__(self) -> None:
         """Inicializa la TestFactory con un cliente API."""
         self.__client = Client
+        self.__observers: list[BaseReportObserver] = []
+
+    def register_observer(self, observer: BaseReportObserver) -> None:
+        self.__observers.append(observer)
+
+    def __notify_observers(self, issue, message):
+        for observer in self.__observers:
+            observer.update(issue, message, str(datetime.now()))
 
     def create(self, details: dict) -> Union[Test, TestSet, TestExecution, TestPlan]:
         """Crea una nueva instancia de un issue de Jira.
@@ -56,6 +66,8 @@ class IssueFactory:
         """
         response = self.__client.post("rest/api/2/issue", json=details)
         issue = self.get(response["key"])
+
+        self.__notify_observers(issue, f"{issue.issuetype()} creado con key {str(issue)}")
 
         return issue
 
@@ -86,6 +98,8 @@ class IssueFactory:
         """
         def __create_issue(data: dict) -> Test:
             issue = self.get(data["key"])
+
+            self.__notify_observers(issue, f"{issue.issuetype()} creado en lote con key {str(issue)}")
 
             return issue
 
@@ -125,6 +139,8 @@ class IssueFactory:
         }
 
         self.__client.post("rest/api/2/issueLink", data=dumps(issue_link_data), headers=headers)
+
+        self.__notify_observers(new_issue, f"{new_issue.issuetype()} clonado de {issue_key} con key {str(new_issue)}")
 
         return new_issue
 
@@ -166,6 +182,8 @@ class IssueFactory:
             "Content-Type": "application/json"
             }
             self.__client.post("rest/api/2/issueLink", data=dumps(issue_link_data), headers=headers)
+
+            self.__notify_observers(new_issues[index], f"{new_issues[index].issuetype()} clonado de {key} con key {str(new_issues[index])}")
 
         return new_issues
 
@@ -235,7 +253,7 @@ class IssueFactory:
         return tests_from_tr
 
     def get_issues_from_summary(self, summary: str, type_issue: str) -> list[Union[Test, TestSet, TestExecution, TestPlan]]:
-        """Obtiene los issues segun el summary y el tipo de issue.
+        """Obtiene los issues segun el summary  el tipo de issue.
 
         Considerar que solo obtendrá los issues que tengan el mismo tipo de issue.
         
@@ -269,7 +287,7 @@ class IssueFactory:
         return issues
     
     def get_issues_from_summaries(self, summaries: list[str], type_issue: str) -> list[Union[Test, TestSet, TestExecution, TestPlan]]:
-        """Obtiene los issues según los summaries y el tipo de issue.
+        """Obtiene los issues según los summaries  el tipo de issue.
         
         Considerar que solo obtendrá los issues que tengan el mismo tipo de issue.
 
